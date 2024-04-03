@@ -2,20 +2,15 @@
 
 using namespace std;
 
-int memo[41] = {1, 1, 1, 0};
-
-int FiboCount(int n) {
-    if(memo[n])
-        return memo[n];
-    
-    return FiboCount(n - 1) + FiboCount(n - 2);
-}
 
 int main() {
     int n;
+    int memo[41] = {1, 1, 1, 0};
 
     cin >> n;
 
-    cout << FiboCount(n) << ' ' << (n - 2) << endl;
+    for(int i = 3; i <= n; i++)
+        memo[i] = memo[i - 1] + memo[i - 2];
+    cout << memo[n] << ' ' << (n - 2) << endl;
     return 0;
 }
