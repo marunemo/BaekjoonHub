@@ -5,38 +5,25 @@ using pii = pair<int, int>;
 
 int board[20][20];
 
-pii CheckStatus(int h_start, int h_end, int w_start, int w_end) {
-    pii result = {0, 0};
-    for(int h = h_start; h <= h_end; h++) {
-        for(int w = w_start; w <= w_end; w++) {
-            if(board[h][w] == 1)
-                result.first++;
-            else if(board[h][w] == 2)
-                result.second++;
-        }
-    }
-    return result;
-}
-
 int DivideCount(int h_start, int h_end, int w_start, int w_end, bool is_vertical) {
-    pii status = CheckStatus(h_start, h_end, w_start, w_end);
-    int count = 0;
     bool contain_imp, contain_jwl;
-
-    if(status.first != status.second - 1)
-        return 0;
-    
-    if(status.first == 0 && status.second == 1)
-        return 1;
+    int count = 0;
+    int imp_count = 0;
+    int jwl_count = 0;
     
     if(is_vertical) {
         for(int w = w_start; w <= w_end; w++) {
+            contain_imp = false;
             contain_jwl = false;
             for(int h = h_start; h <= h_end; h++) {
-                if(board[h][w] == 1)
+                if(board[h][w] == 1) {
                     contain_imp = true;
-                if(board[h][w] == 2)
+                    imp_count++;
+                }
+                if(board[h][w] == 2) {
                     contain_jwl = true;
+                    jwl_count++;
+                }
             }
 
             if(contain_imp && !contain_jwl)
@@ -45,12 +32,17 @@ int DivideCount(int h_start, int h_end, int w_start, int w_end, bool is_vertical
     }
     else {
         for(int h = h_start; h <= h_end; h++) {
+            contain_imp = false;
             contain_jwl = false;
             for(int w = w_start; w <= w_end; w++) {
-                if(board[h][w] == 1)
+                if(board[h][w] == 1) {
                     contain_imp = true;
-                if(board[h][w] == 2)
+                    imp_count++;
+                }
+                if(board[h][w] == 2) {
                     contain_jwl = true;
+                    jwl_count++;
+                }
             }
 
             if(contain_imp && !contain_jwl)
@@ -58,6 +50,12 @@ int DivideCount(int h_start, int h_end, int w_start, int w_end, bool is_vertical
         }
     }
 
+    if(!imp_count) {
+        if(jwl_count == 1)
+            return 1;
+        else
+            return 0;
+    }
     return count;
 }
 
