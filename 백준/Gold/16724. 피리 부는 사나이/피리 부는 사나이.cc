@@ -1,70 +1,61 @@
 #include <iostream>
-#include <unordered_map>
+#define VISITED 1
+#define GOTO_SAFE 2
 
 using namespace std;
 
-int group[1000][1000] = {0};
-unordered_map<int, int> group_union;
-char map[1000][1000] = {0};
+const int dx[4] = {-1, 1, 0, 0};
+const int dy[4] = {0, 0, -1, 1};
 
-int UnionFind(int node) {
-    if(group_union[node] == node)
-        return node;
-    return group_union[node] = UnionFind(group_union[node]);
-}
+int visit[1000][1000] = {0};
+int map[1000][1000] = {0};
 
-void DFS(int row, int col, int group_index) {
-    if(group[row][col]) {
-        if(UnionFind(group[row][col]) == UnionFind(group_index))
-            return;
-        
-        if(group_union[group[row][col]] > group_union[group_index])
-            group_union[group_union[group[row][col]]] = group_union[group_index];
-        else
-            group_union[group_union[group_index]] = group_union[group[row][col]];
-        return;
-    }
+bool DFS(int row, int col) {
+    if(visit[row][col] == VISITED)
+        return true;
+    
+    if(visit[row][col] == GOTO_SAFE)
+        return false;
 
-    group[row][col] = group_index;
-    if(map[row][col] == 'U')
-        DFS(row - 1, col, group_index);
-    else if(map[row][col] == 'D')
-        DFS(row + 1, col, group_index);
-    else if(map[row][col] == 'L')
-        DFS(row, col - 1, group_index);
-    else if(map[row][col] == 'R')
-        DFS(row, col + 1, group_index);
+    visit[row][col] = VISITED;
+    bool flag = DFS(row + dx[map[row][col]], col + dy[map[row][col]]);
+
+    visit[row][col] = GOTO_SAFE;
+    return flag;
 }
 
 int main() {
+    // Fast I/O
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(false);
+
     int height, width;
-    int group_index = 0;
-    int group_count = 0;
-    unordered_map<int, bool> check;
+    char dir;
+    int safe_count = 0;
 
     cin >> height >> width;
     for(int row = 0; row < height; row++) {
-        for(int col = 0; col < width; col++)
-            cin >> map[row][col];
+        for(int col = 0; col < width; col++) {
+            cin >> dir;
+            if(dir == 'U')
+                map[row][col] = 0;
+            else if(dir == 'D')
+                map[row][col] = 1;
+            else if(dir == 'L')
+                map[row][col] = 2;
+            else if(dir == 'R')
+                map[row][col] = 3;
+        }
     }
 
     for(int row = 0; row < height; row++) {
         for(int col = 0; col < width; col++) {
-            if(!group[row][col]) {
-                group_index++;
-                group_union[group_index] = group_index;
-                DFS(row, col, group_index);
-            }
+            if(!visit[row][col])
+                safe_count += DFS(row, col);
         }
     }
 
-    for(int i = 1; i <= group_index; i++) {
-        if(!check[UnionFind(i)]) {
-            check[group_union[i]] = true;
-            group_count++;
-        }
-    }
-
-    cout << group_count << endl;
+    cout << safe_count << endl;
     return 0;
 }
