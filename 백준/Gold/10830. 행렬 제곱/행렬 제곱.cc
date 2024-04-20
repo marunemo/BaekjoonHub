@@ -2,62 +2,54 @@
 #include <vector>
 
 using namespace std;
-using ll = long long;
-using Column = vector<int>;
-using Matrix = vector<Column>;
+using Row = vector<int>;
+using Matrix = vector<Row>;
 
-Matrix MatrixMultiple(Matrix a, Matrix b) {
-    int row_size = a.size();
-    int col_size = b[0].size();
-    int mul_size = a[0].size();
-    Matrix result = Matrix(row_size, Column(col_size));
+Matrix operator*(Matrix A, Matrix B) {
+    int row = A.size();
+    int col = B[0].size();
+    int mul = B.size();
+    Matrix result = Matrix(row, Row(col, 0));
 
-    for(int row = 0; row < row_size; row++) {
-        for(int col = 0; col < col_size; col++) {
-            result[row][col] = 0;
-            for(int mul = 0; mul < mul_size; mul++)
-                result[row][col] += a[row][mul] * b[mul][col];
-            result[row][col] %= 1000;
+    for(int i = 0; i < row; i++) {
+        for(int j = 0; j < col; j++) {
+            for(int k = 0; k < mul; k++)
+                result[i][j] += A[i][k] * B[k][j];
+            result[i][j] %= 1000;
         }
     }
     return result;
 }
 
-Matrix DivideAndConquer(Matrix mat, ll power) {
-    if(power == 1)
-        return mat;
-
-    Matrix sub_solution = DivideAndConquer(mat, power / 2);
-    Matrix solution = MatrixMultiple(sub_solution, sub_solution);
-    
-    if(power % 2)
-        return MatrixMultiple(solution, mat);
-    return solution;
-}
-
 int main() {
-    // Fast I/O
-    cin.tie(0);
-    cout.tie(0);
-    ios_base::sync_with_stdio(false);
-
     int size;
-    ll power;
-    Matrix mat, solution;
+    long long exponent;
+    Matrix matrix;
+    Matrix result;
 
-    cin >> size >> power;
-    mat = Matrix(size, Column(size));
-    for(int row = 0; row < size; row++) {
-        for(int col = 0; col < size; col++) {
-            cin >> mat[row][col];
-            mat[row][col] %= 1000;
-        }
+    cin >> size >> exponent;
+    matrix = Matrix(size, Row(size));
+    for(int i = 0; i < size; i++) {
+        for(int j = 0; j < size; j++)
+            cin >> matrix[i][j];
     }
 
-    solution = DivideAndConquer(mat, power);
-    for(int row = 0; row < size; row++) {
-        for(int col = 0; col < size; col++)
-            cout << solution[row][col] << ' ';
+    // identity matrix
+    result = Matrix(size, Row(size, 0));
+    for(int i = 0; i < size; i++)
+        result[i][i] = 1;
+
+    while(exponent) {
+        if(exponent & 1)
+            result = result * matrix;
+        
+        matrix = matrix * matrix;
+        exponent >>= 1;
+    }
+
+    for(int i = 0; i < size; i++) {
+        for(int j = 0; j < size; j++)
+            cout << result[i][j] << ' ';
         cout << '\n';
     }
     return 0;
