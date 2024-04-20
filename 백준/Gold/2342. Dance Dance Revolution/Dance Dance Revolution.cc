@@ -1,10 +1,9 @@
 #include <iostream>
+#define INF 1000000
 
 using namespace std;
 
-int step_count;
-int step[100000];
-int memo[100000][5][5];
+int step[100001][5][5];
 
 int GetForce(int from, int to) {
     if(from == 0)
@@ -16,39 +15,46 @@ int GetForce(int from, int to) {
     return 3;
 }
 
-int DFS(int depth, int left, int right) {
-    if(depth == step_count)
-        return 0;
-    
-    if(memo[depth][left][right] != -1)
-        return memo[depth][left][right];
-
-    int left_changed = DFS(depth + 1, step[depth], right) + GetForce(left, step[depth]);
-    int right_changed = DFS(depth + 1, left, step[depth]) + GetForce(right, step[depth]);
-    return memo[depth][left][right] = min(left_changed, right_changed);
-}
-
 int main() {
     // Fast I/O
     cin.tie(0);
     cout.tie(0);
     ios_base::sync_with_stdio(false);
 
-    int ddr;
+    int dir, phase;
+    int min_force = INF;
 
-    cin >> ddr;
-    for(step_count = 0; ddr; step_count++) {
-        step[step_count] = ddr;
-        cin >> ddr;
+    for(int i = 0; i < 5; i++) {
+        for(int j = 0; j < 5; j++)
+            step[0][i][j] = INF;
     }
+    step[0][0][0] = 0;
 
-    for(int i = 0; i < step_count; i++) {
-        for(int j = 0; j < 5; j++) {
-            for(int k = 0; k < 5; k++)
-                memo[i][j][k] = -1;
+    cin >> dir;
+    for(phase = 1; dir; phase++) {
+        for(int i = 0; i < 5; i++) {
+            for(int j = 0; j < 5; j++)
+                step[phase][i][j] = INF;
         }
+
+        for(int stop = 0; stop < 5; stop++) {
+            for(int pre_dir = 0; pre_dir < 5; pre_dir++)
+                step[phase][dir][stop] = min(step[phase][dir][stop], step[phase - 1][pre_dir][stop] + GetForce(pre_dir, dir));
+        }
+
+        for(int stop = 0; stop < 5; stop++) {
+            for(int pre_dir = 0; pre_dir < 5; pre_dir++)
+                step[phase][stop][dir] = min(step[phase][stop][dir], step[phase - 1][stop][pre_dir] + GetForce(pre_dir, dir));
+        }
+
+        cin >> dir;
     }
 
-    cout << DFS(0, 0, 0) << endl;
+    for(int i = 0; i < 5; i++) {
+        for(int j = 0; j < 5; j++)
+            min_force = min(min_force, step[phase - 1][i][j]);
+    }
+
+    cout << min_force << endl;
     return 0;
 }
