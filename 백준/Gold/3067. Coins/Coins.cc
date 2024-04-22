@@ -13,7 +13,7 @@ int main() {
     int coin_count;
     vector<int> coin_case;
     int amount;
-    vector<vector<int>> knapsack;
+    vector<int> knapsack;
 
     cin >> tc;
     while(tc--) {
@@ -23,20 +23,15 @@ int main() {
             cin >> coin_case[i];
 
         cin >> amount;
-        knapsack = vector<vector<int>>(amount + 1, vector<int>(coin_count + 1, 0));
+        knapsack = vector<int>(amount + 1, 0);
+        knapsack[0] = 1;    // 0을 표현하는 가지 수
         for(int coin = 1; coin <= coin_count; coin++) {
-            for(int money = 1; money <= amount; money++) {
-                knapsack[money][coin] = knapsack[money][coin - 1];
-                if(money >= coin_case[coin]) {
-                    if(money == coin_case[coin])
-                        knapsack[money][coin] += 1;
-                    else if(knapsack[money - coin_case[coin]][coin])
-                        knapsack[money][coin] += knapsack[money - coin_case[coin]][coin];
-                }
+            for(int money = coin_case[coin]; money <= amount; money++) {
+                knapsack[money] += knapsack[money - coin_case[coin]];
             }
         }
 
-        cout << knapsack[amount][coin_count] << '\n';
+        cout << knapsack[amount] << '\n';
     }
     return 0;
 }
