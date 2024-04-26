@@ -13,6 +13,11 @@ int curr_order;
 vector<int> remove_line;
 
 int main() {
+    // Fast I/O
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(false);
+
     int start, end;
     int left, right, mid;
 
@@ -47,7 +52,7 @@ int main() {
             order[i] = right;
         }
     }
-    
+
     curr_order = lis.size() - 1;
     for(int i = line_count - 1; i >= 0; i--) {
         if(order[i] == curr_order)
