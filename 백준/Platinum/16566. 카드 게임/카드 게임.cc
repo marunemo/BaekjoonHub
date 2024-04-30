@@ -4,8 +4,8 @@
 
 using namespace std;
 
-vector<int> deck;
-vector<int> draw_card;
+int deck[4000000];
+int draw_card[4000000];
 
 int UnionFind(int card) {
     if(draw_card[card] == card)
@@ -25,12 +25,10 @@ int main() {
 
     cin >> n >> m >> k;
 
-    deck = vector<int>(m);
     for(int i = 0; i < m; i++)
         cin >> deck[i];
-    sort(deck.begin(), deck.end());
-
-    draw_card = vector<int>(m);
+    sort(deck, deck + m);
+    
     for(int i = 0; i < m; i++)
         draw_card[i] = i;
     
@@ -49,7 +47,7 @@ int main() {
         }
 
         // union find
-        cout << deck[draw_card[UnionFind(right)]] << '\n';
+        cout << deck[UnionFind(right)] << '\n';
         draw_card[draw_card[right]]++;
     }
     return 0;
