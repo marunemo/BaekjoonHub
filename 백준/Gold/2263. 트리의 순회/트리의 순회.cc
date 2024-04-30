@@ -4,9 +4,9 @@
 
 using namespace std;
 
-vector<int> inorder;
-vector<int> postorder;
-unordered_map<int, int> in_root;
+int inorder[100000];
+int postorder[100000];
+int in_root[100001];
 
 void PreOrder(int in_start, int in_end, int post_start, int post_end) {
     if(in_start > in_end || post_start > post_end)
@@ -29,13 +29,11 @@ int main() {
     int node_count;
     cin >> node_count;
 
-    inorder = vector<int>(node_count);
     for(int i = 0; i < node_count; i++) {
         cin >> inorder[i];
         in_root[inorder[i]] = i;
     }
 
-    postorder = vector<int>(node_count);
     for(int i = 0; i < node_count; i++)
         cin >> postorder[i];
     
