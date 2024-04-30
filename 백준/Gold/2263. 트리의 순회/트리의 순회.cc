@@ -1,19 +1,19 @@
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
 vector<int> inorder;
 vector<int> postorder;
+unordered_map<int, int> in_root;
 
 void PreOrder(int in_start, int in_end, int post_start, int post_end) {
     if(in_start > in_end || post_start > post_end)
         return;
 
     int root = postorder[post_end];
-    
-    int range;
-    for(range = 0; inorder[in_start + range] != root && in_start + range <= in_end; range++);
+    int range = in_root[root] - in_start;
 
     cout << root << ' ';
     PreOrder(in_start, in_start + range - 1, post_start, post_start + range - 1);
@@ -30,8 +30,10 @@ int main() {
     cin >> node_count;
 
     inorder = vector<int>(node_count);
-    for(int i = 0; i < node_count; i++)
+    for(int i = 0; i < node_count; i++) {
         cin >> inorder[i];
+        in_root[inorder[i]] = i;
+    }
 
     postorder = vector<int>(node_count);
     for(int i = 0; i < node_count; i++)
