@@ -6,6 +6,10 @@ using namespace std;
 int book[100000];
 
 int main() {
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(false);
+
     int book_count;
     int start, count;
 
