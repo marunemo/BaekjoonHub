@@ -6,13 +6,8 @@ using namespace std;
 
 int arr[100000];
 pair<int, int> num_index[100000];
-unordered_map<int, int> unordered_index;
-
-void Swap(int &a, int &b) {
-    int tmp = a;
-    a = b;
-    b = tmp;
-}
+int sorted_index[100000];
+bool swapped[100000] = {false};
 
 int main() {
     // Fast I/O
@@ -22,6 +17,7 @@ int main() {
     
     int size;
     int curr_index;
+    int cycle_node;
     int count = 0;
 
     cin >> size;
@@ -30,22 +26,27 @@ int main() {
         num_index[i] = {arr[i], i};
     }
     sort(num_index, num_index + size);
+    
     for(int i = 0; i < size; i++)
-        unordered_index[num_index[i].second] = i;
-
+        sorted_index[num_index[i].second] = i;
+    
     for(int i = 0; i < size; i++) {
-        if(arr[i] == num_index[i].first)
+        if(sorted_index[i] == i)
             continue;
         
-        count++;
+        if(swapped[i])
+            continue;
+        
+        curr_index = i;
+        cycle_node = 0;
+        while(!swapped[curr_index]) {
+            swapped[curr_index] = true;
+            cycle_node++;
+            curr_index = sorted_index[curr_index];
+        }
 
-        curr_index = num_index[i].second;
-        Swap(arr[i], arr[curr_index]);
-        num_index[unordered_index[i]].second = curr_index;
-        num_index[i].second = i;
-
-        unordered_index[curr_index] = unordered_index[i];
-        unordered_index[i] = i;
+        // (cycle의 노드 개수 - 1)회만 swap하면 됨
+        count += cycle_node - 1;
     }
 
     cout << count << endl;
