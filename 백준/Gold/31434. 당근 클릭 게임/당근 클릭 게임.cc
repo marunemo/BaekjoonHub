@@ -28,10 +28,10 @@ int main() {
             if(memo[second][carrot] == -1)
                 continue;
 
-            memo[second + 1][carrot] = memo[second][carrot] + carrot;
+            memo[second + 1][carrot] = max(memo[second + 1][carrot], memo[second][carrot] + carrot);
             for(int item = 0; item < n; item++) {
                 if(memo[second][carrot] >= cost[item])
-                    memo[second + 1][carrot + bonus[item]] = memo[second][carrot] - cost[item];
+                    memo[second + 1][carrot + bonus[item]] = max(memo[second + 1][carrot + bonus[item]], memo[second][carrot] - cost[item]);
             }
         }
     }
