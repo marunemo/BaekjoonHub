@@ -24,6 +24,10 @@ int ConnectedComponent(int row, int col) {
 }
 
 int main() {
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(false);
+    
     int pixel;
     int paint_count = 0;
     int max_area = 0;
