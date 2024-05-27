@@ -1,10 +1,9 @@
 #include <iostream>
 #include <string>
-#include <unordered_map>
 
 using namespace std;
 
-unordered_map<int, int> memo;
+int memo[10241];
 
 int main() {
     cin.tie(0);
@@ -13,7 +12,6 @@ int main() {
 
     int tc;
     int a, b;
-    string result;
     string cycle;
     int index;
 
@@ -21,11 +19,12 @@ int main() {
     while(tc--) {
         cin >> a >> b;
 
-        result = to_string(a / b) + ".";
+        cout << (a / b) << '.';
         a %= b;
         a *= 10;
 
-        memo.clear();
+        for(int i = 0; i <= 10240; i++)
+            memo[i] = 0;
         cycle = "";
         index = 0;
         while(a && !memo[a]) {
@@ -36,10 +35,16 @@ int main() {
         }
 
         if(a == 0)
-            result += cycle + "(0)";
-        else
-            result += cycle.substr(0, memo[a] - 1) + "(" + cycle.substr(memo[a] - 1, cycle.length()) + ")";
-        cout << result << '\n';
+            cout << cycle << "(0)";
+        else {
+            for(int i = 0; i < memo[a] - 1; i++)
+                cout << cycle[i];
+            cout << '(';
+            for(int i = memo[a] - 1; i < cycle.length(); i++)
+                cout << cycle[i];
+            cout << ')';
+        }
+        cout << '\n';
     }
     return 0;
 }
