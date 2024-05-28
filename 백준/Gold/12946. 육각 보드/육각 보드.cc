@@ -12,17 +12,13 @@ int DFS(int row, int col, int clr) {
     color[row][col] = clr;
 
     int count = 1;
-    for(int i = 0; i < 6; i++) {
+    for(int i = 0; i < 6 && count < 3; i++) {
         if(row + dir[i][0] >= 0 && row + dir[i][0] < map_size && col + dir[i][1] >= 0 && col + dir[i][1] < map_size) {
             if(map[row + dir[i][0]][col + dir[i][1]] == 'X') {
-                if(!color[row + dir[i][0]][col + dir[i][1]]) {
-                    count = max(count, 2);
-                    count = max(count, DFS(row + dir[i][0], col + dir[i][1], -clr));
-                }
-                else if(color[row + dir[i][0]][col + dir[i][1]] == clr) {
-                    count = max(count, 3);
-                    return count;
-                }
+                if(!color[row + dir[i][0]][col + dir[i][1]])
+                    count = max(2, DFS(row + dir[i][0], col + dir[i][1], -clr));
+                else if(color[row + dir[i][0]][col + dir[i][1]] == clr)
+                    return 3;
             }
         }
     }
