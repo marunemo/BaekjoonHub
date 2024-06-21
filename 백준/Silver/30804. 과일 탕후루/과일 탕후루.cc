@@ -5,6 +5,10 @@ using namespace std;
 int fruit[200000];
 
 int main() {
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(false);
+    
     int n;
     pair<int, int> type[2] = {{0, 0}, {0, 0}};
     int len = 0;
