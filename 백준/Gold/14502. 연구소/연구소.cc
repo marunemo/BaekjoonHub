@@ -3,110 +3,90 @@
 
 using namespace std;
 
-int Simulate(vector<vector<int>> map) {
-    int width = map[0].size();
-    int height = map.size();
+const int dx[4] = {0, 0, -1, 1};
+const int dy[4] = {-1, 1, 0, 0};
+
+int height, width;
+int map[8][8];
+
+bool InRange(int y, int x) {
+    if(y < 0)
+        return false;
+    if(y >= height)
+        return false;
+    if(x < 0)
+        return false;
+    if(x >= width)
+        return false;
+    return true;
+}
+
+int GetSize() {
+    queue<pair<int, int>> q;
+    int copy[8][8];
     int size = 0;
 
-    queue<pair<int, int>> q;
-    for(int row = 0; row < height; row++) {
-        for(int col = 0; col < width; col++) {
-            if(map[row][col] == 2)
-                q.push({row, col});
+    for(int i = 0; i < height; i++) {
+        for(int j = 0; j < width; j++) {
+            copy[i][j] = map[i][j];
+
+            if(map[i][j] == 2)
+                q.push({i, j});
         }
     }
-
+    
     while(!q.empty()) {
         auto [row, col] = q.front();
         q.pop();
 
-        if(row > 0 && map[row - 1][col] == 0) {
-            map[row - 1][col] = 2;
-            q.push({row - 1, col});
-        }
-        if(row < height - 1 && map[row + 1][col] == 0) {
-            map[row + 1][col] = 2;
-            q.push({row + 1, col});
-        }
-        if(col > 0 && map[row][col - 1] == 0) {
-            map[row][col - 1] = 2;
-            q.push({row, col - 1});
-        }
-        if(col < width - 1 && map[row][col + 1] == 0) {
-            map[row][col + 1] = 2;
-            q.push({row, col + 1});
+        for(int d = 0; d < 4; d++) {
+            if(!InRange(row + dy[d], col + dx[d]))
+                continue;
+            
+            if(copy[row + dy[d]][col + dx[d]] == 0) {
+                copy[row + dy[d]][col + dx[d]] = 2;
+                q.push({row + dy[d], col + dx[d]});
+            }
         }
     }
 
-    for(int r = 0; r < height; r++) {
-        for(int c = 0; c < width; c++) {
-            if(map[r][c] != 0)
-                continue;
-            
-            map[r][c] = 3;
-            q.push({r, c});
-            size++;
-            while(!q.empty()) {
-                auto [row, col] = q.front();
-                q.pop();
-
-                if(row > 0 && map[row - 1][col] == 0) {
-                    map[row - 1][col] = 3;
-                    q.push({row - 1, col});
-                    size++;
-                }
-                if(row < height - 1 && map[row + 1][col] == 0) {
-                    map[row + 1][col] = 3;
-                    q.push({row + 1, col});
-                    size++;
-                }
-                if(col > 0 && map[row][col - 1] == 0) {
-                    map[row][col - 1] = 3;
-                    q.push({row, col - 1});
-                    size++;
-                }
-                if(col < width - 1 && map[row][col + 1] == 0) {
-                    map[row][col + 1] = 3;
-                    q.push({row, col + 1});
-                    size++;
-                }
-            }
+    for(int i = 0; i < height; i++) {
+        for(int j = 0; j < width; j++) {
+            if(copy[i][j] == 0)
+                size++;
         }
     }
 
     return size;
 }
 
-int DFS(vector<vector<int>> &map, int row, int col, int wall) {
-    if(wall == 3)
-        return Simulate(map);
-    if(row == map.size())
+int FindMaxSize(int row, int col, int count) {
+    if(count == 3)
+        return GetSize();
+    if(row == height)
         return 0;
-    if(col == map[0].size())
-        return DFS(map, row + 1, 0, wall);
+    if(col == width)
+        return FindMaxSize(row + 1, 0, count);
     if(map[row][col] != 0)
-        return DFS(map, row, col + 1, wall);
-    
-    map[row][col] = 1;
-    int set = DFS(map, row, col + 1, wall + 1);
-    map[row][col] = 0;
-    int unset = DFS(map, row, col + 1, wall);
+        return FindMaxSize(row, col + 1, count);
 
-    return max(set, unset);
+    int max_size = 0;
+
+    map[row][col] = 1;
+    max_size = FindMaxSize(row, col + 1, count + 1);
+    map[row][col] = 0;
+    max_size = max(max_size, FindMaxSize(row, col + 1, count));
+
+    return max_size;
 }
 
 int main() {
-    int width, height;
-    vector<vector<int>> map;
-
     cin >> height >> width;
-    map = vector<vector<int>>(height, vector<int>(width));
-
-    for(int row = 0; row < height; row++) {
-        for(int col = 0; col < width; col++)
-            cin >> map[row][col];
+    for(int i = 0; i < height; i++) {
+        for(int j = 0; j < width; j++)
+            cin >> map[i][j];
     }
 
-    cout << DFS(map, 0, 0, 0) << endl;
+    cout << FindMaxSize(0, 0, 0) << endl;
     return 0;
 }
