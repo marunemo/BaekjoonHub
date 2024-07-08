@@ -6,7 +6,6 @@ using namespace std;
 using Pos = pair<int, int>;
 
 int n, m;
-vector<vector<int>> map;
 vector<Pos> house;
 vector<Pos> chicken;
 
@@ -34,19 +33,17 @@ int MinDistance(int mask, int index, int count) {
 }
 
 int main() {
-    cin >> n >> m;
+    int info;
 
-    map = vector<vector<int>>(n, vector<int>(n));
+    cin >> n >> m;
     for(int i = 0; i < n; i++) {
         for(int j = 0; j < n; j++) {
-            cin >> map[i][j];
+            cin >> info;
 
-            if(map[i][j] == 1)
+            if(info == 1)
                 house.push_back({i, j});
-            else if(map[i][j] == 2) {
+            else if(info == 2)
                 chicken.push_back({i, j});
-                map[i][j] = 0;
-            }
         }
     }
 
