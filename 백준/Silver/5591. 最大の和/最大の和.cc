@@ -5,6 +5,10 @@ using namespace std;
 int num[100000];
 
 int main() {
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(false);
+
     int count, length;
     int window = 0;
     int max_window = 0;
