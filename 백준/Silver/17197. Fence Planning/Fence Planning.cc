@@ -5,9 +5,9 @@ using namespace std;
 using Pos = pair<int, int>;
 
 int cow_count, group_count;
-vector<Pos> cow;
-vector<vector<int>> adj_list;
-vector<int> check;
+Pos cow[100001];
+vector<int> adj_list[100001];
+int check[100001] = {false};
 
 int GetArea(int init) {
     int left, right, top, bottom;
@@ -40,12 +40,14 @@ int GetArea(int init) {
 }
 
 int main() {
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(false);
+    
     int a, b;
     int min_area = 500000000;
 
     cin >> cow_count >> group_count;
-    cow.resize(cow_count + 1);
-    adj_list.resize(cow_count + 1);
     for(int i = 1; i <= cow_count; i++)
         cin >> cow[i].first >> cow[i].second;
     for(int i = 0; i < group_count; i++) {
@@ -54,12 +56,10 @@ int main() {
         adj_list[b].push_back(a);
     }
 
-    check.resize(cow_count + 1, false);
     for(int i = 1; i <= cow_count; i++) {
         if(!check[i])
             min_area = min(min_area, GetArea(i));
     }
-
     cout << min_area << endl;
     return 0;
 }
