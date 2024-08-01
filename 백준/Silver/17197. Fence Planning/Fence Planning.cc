@@ -6,7 +6,7 @@ using Pos = pair<int, int>;
 int cow_count, group_count;
 Pos group[100001][2];
 int parent[100001];
-int group_index;
+bool valid[100001];
 
 int UnionFind(int node) {
     if(parent[node] == node)
@@ -27,6 +27,7 @@ int main() {
         cin >> group[i][0].first >> group[i][0].second;
         group[i][1] = group[i][0];
         parent[i] = i;
+        valid[i] = true;
     }
 
     for(int i = 0; i < group_count; i++) {
@@ -41,6 +42,7 @@ int main() {
             group[parent[a]][1].first = max(group[parent[a]][1].first, group[parent[b]][1].first);
             group[parent[a]][1].second = max(group[parent[a]][1].second, group[parent[b]][1].second);
 
+            valid[parent[b]] = false;
             parent[parent[b]] = parent[a];
         }
         else {
@@ -49,16 +51,14 @@ int main() {
             group[parent[b]][1].first = max(group[parent[b]][1].first, group[parent[a]][1].first);
             group[parent[b]][1].second = max(group[parent[b]][1].second, group[parent[a]][1].second);
 
+            valid[parent[a]] = false;
             parent[parent[a]] = parent[b];
         }
     }
 
-    parent[0] = 0;
     for(int i = 1; i <= cow_count; i++) {
-        if(UnionFind(i) != 0) {
-            parent[parent[i]] = 0;
+        if(valid[i])
             min_area = min(min_area, 2 * ((group[i][1].first - group[i][0].first) + (group[i][1].second - group[i][0].second)));
-        }
     }
     cout << min_area << endl;
     return 0;
