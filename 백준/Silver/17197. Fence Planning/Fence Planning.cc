@@ -1,42 +1,17 @@
 #include <iostream>
-#include <queue>
 
 using namespace std;
 using Pos = pair<int, int>;
 
 int cow_count, group_count;
-Pos cow[100001];
-vector<int> adj_list[100001];
-int check[100001] = {false};
+Pos group[100001][2];
+int parent[100001];
+int group_index;
 
-int GetArea(int init) {
-    int left, right, top, bottom;
-    queue<int> q;
-    int front;
-
-    left = right = cow[init].first;
-    top = bottom = cow[init].second;
-
-    check[init] = true;
-    q.push(init);
-    while(!q.empty()) {
-        front = q.front();
-        q.pop();
-
-        left = min(left, cow[front].first);
-        right = max(right, cow[front].first);
-        top = max(top, cow[front].second);
-        bottom = min(bottom, cow[front].second);
-
-        for(int next: adj_list[front]) {
-            if(!check[next]) {
-                check[next] = true;
-                q.push(next);
-            }
-        }
-    }
-
-    return 2 * ((right - left) + (top - bottom));
+int UnionFind(int node) {
+    if(parent[node] == node)
+        return node;
+    return parent[node] = UnionFind(parent[node]);
 }
 
 int main() {
@@ -48,17 +23,42 @@ int main() {
     int min_area = 500000000;
 
     cin >> cow_count >> group_count;
-    for(int i = 1; i <= cow_count; i++)
-        cin >> cow[i].first >> cow[i].second;
-    for(int i = 0; i < group_count; i++) {
-        cin >> a >> b;
-        adj_list[a].push_back(b);
-        adj_list[b].push_back(a);
+    for(int i = 1; i <= cow_count; i++) {
+        cin >> group[i][0].first >> group[i][0].second;
+        group[i][1] = group[i][0];
+        parent[i] = i;
     }
 
+    for(int i = 0; i < group_count; i++) {
+        cin >> a >> b;
+
+        if(UnionFind(a) == UnionFind(b))
+            continue;
+        
+        if(parent[a] < parent[b]) {
+            group[parent[a]][0].first = min(group[parent[a]][0].first, group[parent[b]][0].first);
+            group[parent[a]][0].second = min(group[parent[a]][0].second, group[parent[b]][0].second);
+            group[parent[a]][1].first = max(group[parent[a]][1].first, group[parent[b]][1].first);
+            group[parent[a]][1].second = max(group[parent[a]][1].second, group[parent[b]][1].second);
+
+            parent[parent[b]] = parent[a];
+        }
+        else {
+            group[parent[b]][0].first = min(group[parent[b]][0].first, group[parent[a]][0].first);
+            group[parent[b]][0].second = min(group[parent[b]][0].second, group[parent[a]][0].second);
+            group[parent[b]][1].first = max(group[parent[b]][1].first, group[parent[a]][1].first);
+            group[parent[b]][1].second = max(group[parent[b]][1].second, group[parent[a]][1].second);
+
+            parent[parent[a]] = parent[b];
+        }
+    }
+
+    parent[0] = 0;
     for(int i = 1; i <= cow_count; i++) {
-        if(!check[i])
-            min_area = min(min_area, GetArea(i));
+        if(UnionFind(i) != 0) {
+            parent[parent[i]] = 0;
+            min_area = min(min_area, 2 * ((group[i][1].first - group[i][0].first) + (group[i][1].second - group[i][0].second)));
+        }
     }
     cout << min_area << endl;
     return 0;
