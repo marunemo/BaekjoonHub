@@ -1,12 +1,11 @@
 #include <iostream>
-#include <string>
 
 using namespace std;
 
 int main() {
-    string h;
+    char h[102];
     cin >> h;
 
-    cout << (h == "1") + 1 << endl;
+    cout << (!h[1] & (h[0] == 49)) + 1 << endl;
     return 0;
 }
