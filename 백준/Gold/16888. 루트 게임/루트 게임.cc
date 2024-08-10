@@ -9,9 +9,12 @@ int main() {
     cout.tie(0);
     ios_base::sync_with_stdio(false);
 
-    for(int i = 1; i <= 1000000; i++) {
-        for(int j = 1; j * j <= i && !victory[i]; j++)
-            victory[i] |= !victory[i - j * j];
+    for(int i = 0; i <= 1000000; i++) {
+        if(victory[i])
+            continue;
+
+        for(int j = 1; i + j * j <= 1000000; j++)
+            victory[i + j * j] = true;
     }
     
     int tc, num;
