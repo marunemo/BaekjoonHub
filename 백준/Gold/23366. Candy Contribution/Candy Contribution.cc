@@ -2,11 +2,11 @@
 #include <queue>
 
 using namespace std;
-using pli = pair<long long, int>;
+using pii = pair<int, int>;
 
-vector<vector<pli>> adj_list;
-vector<int> key;
-priority_queue<pli, vector<pli>, less<pli>> pq;
+vector<pii> adj_list[100001];
+int key[100001];
+priority_queue<pii, vector<pii>, less<pii>> pq;
 
 int main() {
     cin.tie(0);
@@ -20,7 +20,6 @@ int main() {
     cin >> country >> border;
     cin >> start >> end >> init;
 
-    adj_list = vector<vector<pli>>(country + 1);
     for(int i = 0; i < border; i++) {
         cin >> node1 >> node2 >> tax;
         
@@ -28,17 +27,16 @@ int main() {
         adj_list[node2].push_back({node1, tax});
     }
 
-    key = vector<int>(country + 1, 0);
     key[start] = init;
     pq.push({init, start});
 
     while(!pq.empty()) {
-        long long candy = pq.top().first;
+        int candy = pq.top().first;
         int node = pq.top().second;
         pq.pop();
         
-        for(pli next: adj_list[node]) {
-            long long new_candy = candy * (100 - next.second) / 100;
+        for(pii next: adj_list[node]) {
+            long long new_candy = (long long)candy * (100 - next.second) / 100;
             if(key[next.first] >= new_candy)
                 continue;
             
