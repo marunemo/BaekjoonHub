@@ -4,14 +4,15 @@
 using namespace std;
 using pii = pair<int, int>;
 
-const int dy[4] = {0, 1, 0, -1};
-const int dx[4] = {1, 0, -1, 0};
+const int dy[4] = {1, 0, -1, 0};
+const int dx[4] = {0, 1, 0, -1};
 
 int height, width, rotate;
 int arr[300][300];
 bool check[300][300];
 vector<pii> rotateList[300];
 int rotateIndex = 0;
+int result[300][300];
 
 bool InRange(int row, int col) {
     if(row < 0)
@@ -25,16 +26,14 @@ bool InRange(int row, int col) {
     return !check[row][col];
 }
 
-void RotateArray() {
+void RotateArray(int rotate) {
     for(int i = 0; i < rotateIndex; i++) {
-        int tmp = arr[rotateList[i][0].first][rotateList[i][0].second];
         int size = rotateList[i].size();
-        for(int j = 1; j < size; j++) {
-            pii pos1 = rotateList[i][j - 1];
-            pii pos2 = rotateList[i][j];
-            arr[pos1.first][pos1.second] = arr[pos2.first][pos2.second];
+        for(int j = 0; j < size; j++) {
+            pii curr = rotateList[i][j];
+            pii next = rotateList[i][(rotate + j) % size];
+            result[next.first][next.second] = arr[curr.first][curr.second];
         }
-        arr[rotateList[i][size - 1].first][rotateList[i][size - 1].second] = tmp;
     }
 }
 
@@ -65,16 +64,14 @@ int main() {
                 rotateList[rotateIndex].push_back({row, col});
             }
         }
-        col++;
+        row++;
         rotateIndex++;
     }
 
-    while(rotate--)
-        RotateArray();
-
+    RotateArray(rotate);
     for(row = 0; row < height; row++) {
         for(col = 0; col < width; col++)
-            cout << arr[row][col] << ' ';
+            cout << result[row][col] << ' ';
         cout << '\n';
     }
     return 0;
