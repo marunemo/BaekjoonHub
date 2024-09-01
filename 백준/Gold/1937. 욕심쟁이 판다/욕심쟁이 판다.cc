@@ -1,16 +1,13 @@
 #include <iostream>
-#include <algorithm>
 
 using namespace std;
 using Pos = pair<int, int>;
-using Node = pair<int, Pos>;
 
 const int dy[4] = {-1, 1, 0, 0};
 const int dx[4] = {0, 0, -1, 1};
 
 int n;
 int map[500][500];
-Node node[250000];
 int memo[500][500];
 
 bool IsValid(int row, int col, int bamboo) {
@@ -46,16 +43,13 @@ int main() {
     
     cin >> n;
     for(int row = 0, node_index = 0; row < n; row++) {
-        for(int col = 0; col < n; col++) {
+        for(int col = 0; col < n; col++)
             cin >> map[row][col];
-            node[node_index++] = {map[row][col], {row, col}};
-        }
     }
-    sort(node, node + n * n, greater<Node>());
 
-    for(int i = 0; i < n * n; i++) {
-        auto [row, col] = node[i].second;
-        max_len = max(max_len, DFS(row, col));
+    for(int row = 0, node_index = 0; row < n; row++) {
+        for(int col = 0; col < n; col++)
+            max_len = max(max_len, DFS(row, col));
     }
 
     cout << max_len << endl;
