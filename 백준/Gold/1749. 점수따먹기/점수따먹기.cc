@@ -7,6 +7,10 @@ int matrix[201][201];
 int prefix[201][201];
 
 int main() {
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(false);
+
     int max_sum = -800000000;
 
     cin >> n >> m;
