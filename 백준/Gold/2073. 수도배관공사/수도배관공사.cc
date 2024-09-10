@@ -1,27 +1,26 @@
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
-int knapsack[100001] = {0};
-
 int main() {
-    cin.tie(0);
-    cout.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    int distance, pipe_count;
-    int pipe_len, pipe_cap;
+    int pipe_count, distance;
+    int length, capacity;
+    vector<int> dp;
 
     cin >> distance >> pipe_count;
-    for(int i = 1; i <= pipe_count; i++) {
-        cin >> pipe_len >> pipe_cap;
-        for(int length = distance; length > pipe_len; length--) {
-            if(knapsack[length - pipe_len])
-                knapsack[length] = max(knapsack[length], min(pipe_cap, knapsack[length - pipe_len]));
+    dp.resize(distance + 1, 0);
+
+    for(int i = 0; i < pipe_count; i++) {
+        cin >> length >> capacity;
+
+        for(int j = distance; j > length; j--) {
+            if(dp[j - length])
+                dp[j] = max(dp[j], min(dp[j - length], capacity));
         }
-        knapsack[pipe_len] = max(knapsack[pipe_len], pipe_cap);
+        dp[length] = max(dp[length], capacity);
     }
 
-    cout << knapsack[distance] << endl;
+    cout << dp[distance] << endl;
     return 0;
 }
