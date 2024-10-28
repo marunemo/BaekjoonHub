@@ -13,8 +13,8 @@ int main() {
     cout.tie(0);
     ios_base::sync_with_stdio(false);
 
-    int n, m;
-    ll min_box, count = 0;
+    int n, m, min_box;
+    ll count = 0;
 
     cin >> n >> m;
     for(int i = 1; i <= n; i++) {
@@ -26,7 +26,7 @@ int main() {
         for(int j = 1; j <= m; j++) {
             min_box = (box[i][j] ? box[i][j] - 1 : 0);
             for(int k = 0; k < 4; k++)
-                min_box = min(min_box, (ll)box[i + dy[k]][j + dx[k]]);
+                min_box = min(min_box, box[i + dy[k]][j + dx[k]]);
             count += min_box;
         }
     }
