@@ -1,0 +1,1 @@
+i,j,k=map(int,input().split());print("Bad"if i<1000 else"Good"if(j<8000)&(k<260)else"Very Good")
