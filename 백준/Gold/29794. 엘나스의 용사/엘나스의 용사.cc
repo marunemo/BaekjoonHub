@@ -12,14 +12,14 @@ int main() {
 
     int warrior_count, tower_height, date;
     int warrior_level, mob_level;
-    int level_count[MAX_LEVEL + 1] = {0};
+    int level_count[MAX_LEVEL] = {0};
     int max_lvl[201] = {0};
     int hunt_spot[201] = {0};
     pll move_reduced[MAX_LEVEL];
     pll prefix_sum[MAX_LEVEL];
     ll total_move, total_reduce;
     ll min_total_move, result_reduced;
-    int min_x, min_y;
+    int min_x = 0, min_y = 0;
 
     cin >> warrior_count >> tower_height >> date;
     for(int i = 0; i < warrior_count; i++)  {
@@ -35,7 +35,7 @@ int main() {
     }
 
     min_total_move = (ll)warrior_count * tower_height * date;
-    for(int x = 1; x < tower_height; x++) {
+    for(int x = 1; x <= tower_height; x++) {
         for(int y = x + 1; y <= tower_height; y++) {
             prefix_sum[0] = {0, 0};
             for(int lvl = 1; lvl < MAX_LEVEL; lvl++) {
