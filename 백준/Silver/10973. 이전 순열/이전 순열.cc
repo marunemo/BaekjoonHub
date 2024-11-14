@@ -3,20 +3,23 @@
 using namespace std;
 
 int main() {
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(false);
+
     int n;
     int arr[10000];
     bool found[10001] = {0};
     int idx;
-    bool asc = true;
-    bool flag;
+    bool flag = true;
 
     cin >> n;
     for(int i = 0; i < n; i++)
         cin >> arr[i];
     
     found[arr[n - 1]] = true;
-    for(idx = n - 2; idx >= 0 && asc; idx -= asc) {
-        asc = arr[idx] < arr[idx + 1];
+    for(idx = n - 2; idx >= 0 && flag; idx -= flag) {
+        flag = arr[idx] < arr[idx + 1];
         found[arr[idx]] = true;
     }
     
