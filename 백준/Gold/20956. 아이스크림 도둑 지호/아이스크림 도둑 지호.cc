@@ -1,10 +1,17 @@
 #include <iostream>
-#include <unordered_map>
-#include <queue>
 #include <algorithm>
 
 using namespace std;
 using ll = long long;
+using pli = pair<ll, int>;
+
+bool Compare(pli a, pli b) {
+    if(a.first == b.first)
+        return a.second < b.second;
+    return a.first > b.first;
+}
+
+pli ice_cream[100000];
 
 int main() {
     cin.tie(0);
@@ -12,30 +19,33 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     int total, ate;
-    vector<ll> ice_cream;
-    unordered_map<ll, deque<int>> index;
+    int left, right;
     bool flip = false;
-
+    
     cin >> total >> ate;
-    ice_cream.resize(total);
     for(int i = 0; i < total; i++) {
-        cin >> ice_cream[i];
-        index[ice_cream[i]].push_back(i + 1);
+        cin >> ice_cream[i].first;
+        ice_cream[i].second = i + 1;
     }
-    sort(ice_cream.begin(), ice_cream.end(), greater<ll>());
+    sort(ice_cream, ice_cream + total, Compare);
 
-    for(int i = 0; i < ate; i++) {
-        if(flip) {
-            cout << index[ice_cream[i]].back() << '\n';
-            index[ice_cream[i]].pop_back();
-        }
-        else {
-            cout << index[ice_cream[i]].front() << '\n';
-            index[ice_cream[i]].pop_front();
-        }
+    for(int i = 0; i < ate; ) {
+        left = i;
+        right = i;
 
-        if(ice_cream[i] % 7 == 0)
-            flip = !flip;
+        while(ice_cream[left].first == ice_cream[right + 1].first)
+            right++;
+        
+        for(; i < ate && left <= right; i++) {
+            if(flip)
+                cout << ice_cream[right--].second << '\n';
+            else
+                cout << ice_cream[left++].second << '\n';
+            
+            if(ice_cream[i].first % 7 == 0)
+                flip = !flip;
+        }
     }
+    
     return 0;
 }
