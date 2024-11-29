@@ -11,6 +11,10 @@ bool IsPrime(int num) {
 }
 
 int main() {
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(false);
+    
     int prime_count[123456 * 2  + 1] = {0};
     int n;
     
