@@ -1,30 +1,41 @@
 #include <iostream>
 #include <string>
-#include <algorithm>
+
 using namespace std;
 
-// https://developingbear.tistory.com/169
-string str;
-
 int main() {
-	int T;
-	cin >> T;
-	for (int i = 0; i < T; i++) {
-		cin >> str;
-		int answer = 0;
-		int pos = 2e9;
-		int size = str.size();
-		for (int i = 0; i < size; i++)
-			answer += min(str[i] - 'A', 'Z' - str[i] + 1);
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(false);
+    
+    int tc;
+    string name;
+    int count, len, min_dist;
 
-		for (int i = 0, j; i < size; i++) {
-			for (j = i + 1; j < size && str[j] == 'A'; j++);
-			if (str[i] == 'A' && j == size + 1) break;
-			int right = i * 2 + size - j;
-			int left = i + (size - j) * 2;
-			int temp = min(left, right);
-			pos = min(temp, pos);
-		}
-		cout << answer + pos << "\n";
-	}
+    cin >> tc;
+    while(tc--) {
+        cin >> name;
+
+        count = 0;
+        len = name.length();
+        for(int i = 0; i < len; i++)
+            count += min(name[i] - 'A', ('Z' - name[i]) + 1);
+        
+        min_dist = len - 1;
+        for(int i, left, right, dist, start = 0; start < len; start++) {
+            for(i = start + 1; i < len && name[i] == 'A'; i++);
+            
+            // 오른쪽으로 갔다가 왼쪽 (오른쪽 왕복 이후 왼쪽 A 없는 끝까지)
+            right = start * 2 + (len - i);
+
+            // 왼쪽으로 갔다가 오른쪽
+            left = (len - i) * 2 + start;
+
+            dist = min(left, right);
+            min_dist = min(min_dist, dist);
+        }
+        
+        cout << (count + min_dist) << '\n';
+    }
+    return 0;
 }
