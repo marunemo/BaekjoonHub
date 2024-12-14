@@ -25,31 +25,27 @@ int main() {
             finish_time = t;
     }
 
-    for(int i = -1000 + OFFSET; i <= 1000 + OFFSET; i++)
-        DP[0][i] = -1;
-    DP[0][0 + OFFSET] = 0;
-
     for(int time = 1; time <= finish_time; time++) {
-        for(int i = -1000 + OFFSET; i <= 1000 + OFFSET; i++) {
+        for(int i = -time + OFFSET; i <= time + OFFSET; i++) {
             DP[time][i] = -1;
             if(bodybang[time].first < i && i < bodybang[time].second)
                 continue;
             
-            if(i > -1000 + OFFSET && DP[time - 1][i - 1] != -1) {
+            if(i > -(time - 1) + OFFSET && DP[time - 1][i - 1] != -1) {
                 if(DP[time][i] == -1)
                     DP[time][i] = DP[time - 1][i - 1] + 1;
                 else
                     DP[time][i] = min(DP[time][i], DP[time - 1][i - 1] + 1);
             }
 
-            if(DP[time - 1][i] != -1) {
+            if(i >= -(time - 1) + OFFSET && i <= (time - 1) + OFFSET && DP[time - 1][i] != -1) {
                 if(DP[time][i] == -1)
                     DP[time][i] = DP[time - 1][i];
                 else
                     DP[time][i] = min(DP[time][i], DP[time - 1][i]);
             }
 
-            if(i < 1000 + OFFSET && DP[time - 1][i + 1] != -1) {
+            if(i < (time - 1) + OFFSET && DP[time - 1][i + 1] != -1) {
                 if(DP[time][i] == -1)
                     DP[time][i] = DP[time - 1][i + 1] + 1;
                 else
@@ -59,7 +55,7 @@ int main() {
     }
 
     min_move = finish_time + 1;
-    for(int i = -1000 + OFFSET; i <= 1000 + OFFSET; i++) {
+    for(int i = -finish_time + OFFSET; i <= finish_time + OFFSET; i++) {
         if(DP[finish_time][i] != -1)
             min_move = min(min_move, DP[finish_time][i]);
     }
