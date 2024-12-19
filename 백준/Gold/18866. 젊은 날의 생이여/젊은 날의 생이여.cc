@@ -1,13 +1,19 @@
 #include <iostream>
+#include <stack>
 
 using namespace std;
-using pii = pair<int, int>;
+using Score = pair<int, int>;
+
+// left happy: min -> just min
+// right happy: max -> desc
+// left tired: max -> just max
+// right happ: min -> asc
 
 int date_count;
-pii happy_tired[1000000];
-int min_happy, max_happy, min_tired, max_tired;
-pii young[1000000], old[1000000];
-int last_date = -1;
+Score happy_tired[1000000];
+int left_happy, left_tired;
+stack<Score> right_happy, right_tired;
+int curr_date, last_date = -1;
 
 int main() {
     cin.tie(0);
@@ -17,32 +23,35 @@ int main() {
     cin >> date_count;
     for(int i = 0; i < date_count; i++)
         cin >> happy_tired[i].first >> happy_tired[i].second;
-
-    min_happy = 1e9 + 1;
-    max_tired = 0;
-    for(int i = 0; i < date_count; i++) {
-        if(happy_tired[i].first)
-            min_happy = min(min_happy, happy_tired[i].first);
-        if(happy_tired[i].second)
-            max_tired = max(max_tired, happy_tired[i].second);
-
-        young[i] = {min_happy, max_tired};
+    
+    right_happy.push({0, date_count});
+    right_tired.push({1e9, date_count});
+    for(int i = date_count - 1; i; i--) {
+        if(happy_tired[i].first && happy_tired[i].first > right_happy.top().first)
+            right_happy.push({happy_tired[i].first, i});
+        if(happy_tired[i].second && happy_tired[i].second < right_tired.top().first)
+            right_tired.push({happy_tired[i].second, i});
     }
 
-    max_happy = 0;
-    min_tired = 1e9 + 1;
-    for(int i = date_count - 1; i >= 0; i--) {
-        if(happy_tired[i].first)
-            max_happy = max(max_happy, happy_tired[i].first);
-        if(happy_tired[i].second)
-            min_tired = min(min_tired, happy_tired[i].second);
+    curr_date = 0;
+    left_happy = 1e9;
+    left_tired = 0;
 
-        old[i] = {max_happy, min_tired};
-    }
+    for(; curr_date < date_count - 1; curr_date++) {
+        // update happy
+        if(right_happy.top().second <= curr_date)
+            right_happy.pop();
+        if(happy_tired[curr_date].first)
+            left_happy = min(left_happy, happy_tired[curr_date].first);
 
-    for(int i = 0; i < date_count - 1; i++) {
-        if(young[i].first >= old[i + 1].first && young[i].second <= old[i + 1].second)
-            last_date = i + 1;
+        // update tired
+        if(right_tired.top().second <= curr_date)
+            right_tired.pop();
+        if(happy_tired[curr_date].second)
+            left_tired = max(left_tired, happy_tired[curr_date].second);
+
+        if(left_happy > right_happy.top().first && left_tired < right_tired.top().first)
+            last_date = curr_date + 1;
     }
 
     cout << last_date << endl;
