@@ -3,8 +3,7 @@
 using namespace std;
 
 int phase_count, heal;
-int score[1001];
-int damage[1001];
+int score[1001], damage;
 int DP[101] = {0};
 
 int main() {
@@ -16,18 +15,16 @@ int main() {
 
     cin >> phase_count >> heal;
     for(int i = 1; i <= phase_count; i++)
-        cin >> score[i];
-    for(int i = 1; i <= phase_count; i++)
-        cin >> damage[i];
-    
+        cin >> score[i];    
     for(int i = 1; i <= phase_count; i++) {
+        cin >> damage;
         for(int j = 100; j >= 0; j--)
             DP[min(100, j + heal)] = max(DP[min(100, j + heal)], DP[j]);
         for(int j = 0; j < heal; j++)
             DP[j] = 0;
 
-        for(int j = damage[i]; j <= 100; j++)
-            DP[j - damage[i]] = max(DP[j - damage[i]], DP[j] + score[i]);
+        for(int j = damage; j <= 100; j++)
+            DP[j - damage] = max(DP[j - damage], DP[j] + score[i]);
     }
     
     for(int i = 0; i <= 100; i++)
