@@ -21,18 +21,11 @@ int main() {
         cin >> damage[i];
     
     for(int i = 1; i <= phase_count; i++) {
-        for(int j = 100 - heal; j < 100; j++)
-            DP[i - 1][100] = max(DP[i - 1][100], DP[i - 1][j]);
-        for(int j = 100 - heal - 1; j >= 0; j--)
-            DP[i - 1][j + heal] = DP[i - 1][j];
-        for(int j = 0; j < heal; j++)
-            DP[i - 1][j] = 0;
-
-        for(int j = 0; j <= 100; j++)
-            DP[i][j] = DP[i - 1][j];
+        for(int j = 100; j >= 0; j--)
+            DP[i][min(100, j + heal)] = max(DP[i][min(100, j + heal)], DP[i - 1][j]);
 
         for(int j = damage[i]; j <= 100; j++)
-            DP[i][j - damage[i]] = max(DP[i][j - damage[i]], DP[i - 1][j] + score[i]);
+            DP[i][j - damage[i]] = max(DP[i][j - damage[i]], DP[i][j] + score[i]);
     }
     
     for(int i = 0; i <= 100; i++)
