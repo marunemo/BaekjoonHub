@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <string>
 #include <unordered_map>
 #include <algorithm>
@@ -7,8 +8,7 @@ using namespace std;
 
 int n, k;
 string word;
-string words[100000];
-int words_count = 0;
+vector<string> words;
 unordered_map<string, int> frequency, idx;
 
 bool Compare(string a, string b) {
@@ -28,13 +28,13 @@ int main() {
     for(int i = 0; i < 3 * n; i++) {
         getline(cin, word);
         if(!frequency[word])
-            words[words_count++] = word; 
+            words.push_back(word);
         frequency[word]++;
         idx[word] = i;
     }
-    sort(words, words + words_count, Compare);
+    sort(words.begin(), words.end(), Compare);
 
-    for(int i = 0; i < k && i < words_count; i++)
+    for(int i = 0; i < k && i < words.size(); i++)
         cout << words[i] << '\n';
     return 0;
 }
