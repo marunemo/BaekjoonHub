@@ -17,17 +17,16 @@ int main() {
 
         if(dir == 1) {
             left++;
-            right--;
+            if(right)
+                right--;
+            max_score = max(max_score, left);
         }
         else if(dir == 2) {
-            left--;
+            if(left)
+                left--;
             right++;
+            max_score = max(max_score, right);
         }
-        left = max(left, 0);
-        right = max(right, 0);
-
-        max_score = max(max_score, left);
-        max_score = max(max_score, right);
     }
     cout << max_score << endl;
     return 0;
