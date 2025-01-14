@@ -1,0 +1,1 @@
+print(["high speed rail","flight"][int(input())>int(input())])
