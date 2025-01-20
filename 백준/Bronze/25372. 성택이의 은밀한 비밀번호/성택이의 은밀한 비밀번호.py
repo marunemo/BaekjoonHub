@@ -1,0 +1,1 @@
+[print(["no","yes"][5<len(input())<=9])for _ in range(int(input()))]
