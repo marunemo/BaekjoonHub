@@ -1,0 +1,1 @@
+print(int(sum([int(input())for _ in range(3)])<=21))
