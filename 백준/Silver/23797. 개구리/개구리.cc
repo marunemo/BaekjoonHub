@@ -4,13 +4,13 @@
 using namespace std;
 
 int main() {
-    string echo;
+    char c;
     int min_p = 0, min_m = 0;
     int weight = 0;
 
-    cin >> echo;
-    for(char e: echo) {
-        if(e == 'K')
+    c = getchar();
+    while(c != '\n') {
+        if(c == 'K')
             weight++;
         else
             weight--;
@@ -19,6 +19,7 @@ int main() {
             min_m = max(min_m, -weight);
         else
             min_p = max(min_p, weight);
+        c = getchar();
     }
     cout << (min_m + min_p) << endl;
     return 0;
