@@ -1,2 +1,2 @@
-a,b,c=(int(input())for _ in range(3))
+a,b,c=map(int,open(0))
 print((b-c)//a)
