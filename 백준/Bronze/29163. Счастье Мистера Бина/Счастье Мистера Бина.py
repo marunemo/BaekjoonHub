@@ -1,0 +1,1 @@
+input();print(["Sad","Happy"][sum(map(lambda x:int(x)%2*2-1,input().split()))<0])
