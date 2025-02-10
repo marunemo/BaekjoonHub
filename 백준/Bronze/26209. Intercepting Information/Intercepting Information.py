@@ -1,0 +1,1 @@
+print("SF"[input().split().count("9")>0])
