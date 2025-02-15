@@ -1,0 +1,1 @@
+print("%.1f"%(eval(input().replace(*" *"))/2))
