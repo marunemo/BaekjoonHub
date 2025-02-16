@@ -1,0 +1,1 @@
+print({m[0]:m for m in ["MatKor","WiCys","CyKor","AlKor","$clear"]}[input()])
