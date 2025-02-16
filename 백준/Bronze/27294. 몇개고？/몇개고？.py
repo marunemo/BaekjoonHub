@@ -1,0 +1,1 @@
+t,s=map(int,input().split());print(320 if(12<=t<=16)&(1-s)else 280)
