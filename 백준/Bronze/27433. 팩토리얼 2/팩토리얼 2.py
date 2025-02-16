@@ -1,0 +1,1 @@
+n=int(input());print(1 if n==0 else eval("*".join(map(str,range(1,n+1)))))
