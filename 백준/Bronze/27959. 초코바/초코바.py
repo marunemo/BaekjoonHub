@@ -1,0 +1,1 @@
+print("YNeos"[eval("100*"+input().replace(*" <"))::2])
