@@ -1,0 +1,1 @@
+print("Naver","WDh2a l e"[input().lower()=='n'::2])
