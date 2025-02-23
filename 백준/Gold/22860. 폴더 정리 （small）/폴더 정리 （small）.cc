@@ -2,32 +2,37 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <set>
 
 using namespace std;
 using pii = pair<int, int>;
 using File = pair<string, bool>;
 
-unordered_map<string, vector<File>> tree;
-unordered_map<string, bool> check;
+struct TypeCount {
+    set<string> type;
+    int count;
+};
 
-pii DFS(string name) {
-    pii tmp, type_count = {0, 0};
+unordered_map<string, vector<File>> tree;
+unordered_map<string, pii> result;
+
+TypeCount DFS(string name) {
+    TypeCount type_count, tmp;
+    type_count.count = 0;
 
     for(File file: tree[name]) {
         if(file.second) {
             tmp = DFS(file.first);
-            type_count.first += tmp.first;
-            type_count.second += tmp.second;
+            type_count.type.merge(tmp.type);
+            type_count.count += tmp.count;
         }
         else {
-            if(!check[file.first]) {
-                check[file.first] = true;
-                type_count.first++;
-            }
-            type_count.second++;
+            type_count.type.insert(file.first);
+            type_count.count++;
         }
     }
 
+    result[name] = {type_count.type.size(), type_count.count};
     return type_count;
 }
 
@@ -49,11 +54,12 @@ int main() {
         tree[parent].push_back({dir, type == 1});
     }
 
+    DFS("main");
+
     cin >> query;
     while(query--) {
         cin >> dir;
 
-        check.clear();
         for(int i = dir.length() - 1; i >= 0; i--) {
             if(dir[i] == '/') {
                 dir = dir.substr(i + 1);
@@ -61,7 +67,7 @@ int main() {
             }
         }
 
-        type_count = DFS(dir);
+        type_count = result[dir];
         cout << type_count.first << ' ' << type_count.second << '\n';
     }
     return 0;
