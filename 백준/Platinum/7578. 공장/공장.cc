@@ -1,14 +1,11 @@
 #include <iostream>
-#include <vector>
-#include <unordered_map>
-#include <cmath>
 
 using namespace std;
 
-unordered_map<int, int> index_map;
-vector<int> seg_tree;
+int index_map[1000001];
+int seg_tree[1 << 20];
 
-int QueryTree(int start, int end, const int &left, const int &right, int node = 1) {
+int QueryTree(int start, int end, int node, const int &left, const int &right) {
     if(left <= start && end <= right) {
         return seg_tree[node];
     }
@@ -17,12 +14,13 @@ int QueryTree(int start, int end, const int &left, const int &right, int node = 
         return 0;
     }
 
-    int left_node = QueryTree(start, (start + end) / 2, left, right, node * 2);
-    int right_node = QueryTree((start + end) / 2 + 1, end, left, right, node * 2 + 1);
-    return left_node + right_node;
+    // (start + end) / 2 대신 사용하면 overflow를 방지할 수 있음
+    int mid = start + (end - start) / 2;
+
+    return QueryTree(start, mid, node * 2, left, right) + QueryTree(mid + 1, end, node * 2 + 1, left, right);
 }
 
-int UpdateTree(int start, int end, const int &index, int node = 1) {
+int UpdateTree(int start, int end, int node, const int &index) {
     if(index < start || end < index) {
         return seg_tree[node];
     }
@@ -31,9 +29,9 @@ int UpdateTree(int start, int end, const int &index, int node = 1) {
         return ++seg_tree[node];
     }
 
-    int left_node = UpdateTree(start, (start + end) / 2, index, node * 2);
-    int right_node = UpdateTree((start + end) / 2 + 1, end, index, node * 2 + 1);
-    return seg_tree[node] = left_node + right_node;
+    int mid = start + (end - start) / 2;
+    
+    return seg_tree[node] = UpdateTree(start, mid, node * 2, index) + UpdateTree(mid + 1, end, node * 2 + 1, index);
 }
 
 int main() {
@@ -41,25 +39,21 @@ int main() {
     cout.tie(0);
     ios_base::sync_with_stdio(false);
 
-    int n, key;
-    int height;
+    int n, number;
     long long pair_count = 0;
 
     cin >> n;
     for(int i = 1; i <= n; i++) {
-        cin >> key;
+        cin >> number;
         
-        index_map[key] = i;
+        index_map[number] = i;
     }
-    
-    height = ceil(log2(n));
-    seg_tree.resize(1 << (1 + height), 0);
 
     for(int i = 1; i <= n; i++) {
-        cin >> key;
+        cin >> number;
 
-        pair_count += QueryTree(1, n, index_map[key], n);
-        UpdateTree(1, n, index_map[key]);
+        pair_count += QueryTree(1, n, 1, index_map[number] + 1, n);
+        UpdateTree(1, n, 1, index_map[number]);
     }
 
     cout << pair_count << endl;
