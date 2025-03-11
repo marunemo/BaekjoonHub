@@ -1,12 +1,10 @@
 #include <iostream>
-#include <vector>
-#include <cmath>
 
 using namespace std;
 
-vector<int> seq;
-vector<int> xor_tree;
-vector<int> lazy;
+int seq[500000];
+int xor_tree[1 << 20];
+int lazy[1 << 20];
 
 int CreateTree(int start, int end, int node) {
     if(start == end) {
@@ -36,23 +34,23 @@ void CheckLazy(int start, int end, int node) {
     lazy[node] = 0;
 }
 
-void UpdateTree(int start, int end, int node, const int &left, const int &right, const int &k) {
+int UpdateTree(int start, int end, int node, const int &left, const int &right, const int &k) {
     CheckLazy(start, end, node);
     
     if(left <= start && end <= right) {
         lazy[node] ^= k;
         CheckLazy(start, end, node);
-        return;
+        return xor_tree[node];
     }
-
+    
     if(end < left || right < start) {
-        return;
+        return xor_tree[node];
     }
 
     int mid = start + (end - start) / 2;
-    UpdateTree(start, mid, node * 2, left, right, k);
-    UpdateTree(mid + 1, end, node * 2 + 1, left, right, k);
-    xor_tree[node] = xor_tree[node * 2] ^ xor_tree[node * 2 + 1];
+    int left_node = UpdateTree(start, mid, node * 2, left, right, k);
+    int right_node = UpdateTree(mid + 1, end, node * 2 + 1, left, right, k);
+    return xor_tree[node] = left_node ^ right_node;
 }
 
 int QueryTree(int start, int end, int node, const int &left, const int &right) {
@@ -82,14 +80,9 @@ int main() {
     int query, a, b, c;
 
     cin >> n;
-    seq.resize(n + 1);
     for(int i = 1; i <= n; i++) {
         cin >> seq[i];
     }
-
-    height = ceil(log2(n));
-    xor_tree.resize(1 << (1 + height));
-    lazy.resize(1 << (1 + height));
     CreateTree(1, n, 1);
 
     cin >> m;
